@@ -1,0 +1,70 @@
+from __future__ import annotations
+
+import argparse
+import yaml
+
+from .utils.detector import detect_cms
+from .utils.dynamic_scraper import DynamicFetcher
+from .utils.output import save_data
+from .utils.static_scraper import StaticScraper
+from .utils.logger import setup_logger
+
+
+LOGGER = setup_logger(__name__)
+
+
+def load_config(path: str) -> dict:
+    with open(path, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def run(config_path: str) -> None:
+    cfg = load_config(config_path)
+    url = cfg.get("url")
+    mode = cfg.get("mode", "static")
+    output_format = cfg.get("output_format", "csv")
+    output_dir = cfg.get("output_dir", "outputs")
+    headless = cfg.get("headless", True)
+    max_pages = cfg.get("max_pages", 10)
+    selectors = cfg.get("selectors", {})
+
+    cms = detect_cms(url)
+    LOGGER.info("Detected CMS: %s", cms)
+
+    fetcher = None
+    dyn = None
+    if mode == "dynamic":
+        dyn = DynamicFetcher(headless=headless)
+        fetcher = dyn.fetch
+
+    scraper = StaticScraper(
+        url,
+        selectors=selectors,
+        output_dir=output_dir,
+        max_pages=max_pages,
+        fetcher=fetcher,
+        logger=LOGGER,
+    )
+
+    products_info = []
+    products = scraper.scrape_collection()
+    LOGGER.info("Found %s products", len(products))
+    for p in products:
+        info = scraper.scrape_product(p["link"])
+        products_info.append(info)
+
+    save_data(products_info, output_dir, fmt=output_format)
+
+    if dyn:
+        dyn.close()
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Scraper Ultime")
+    parser.add_argument("--config", default="scraper_ultime/config.yaml")
+    args = parser.parse_args()
+    run(args.config)
+
+
+if __name__ == "__main__":
+    main()

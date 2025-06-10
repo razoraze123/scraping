@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+selenium
+tqdm
+PySide6
+pandas
+openpyxl
+markdownify
+pyyaml
