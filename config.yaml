@@ -1,6 +1,0 @@
-# Example configuration for ecom_scraper
-url: "https://example.com/collection"
-mode: "static"  # or 'dynamic'
-output_format: "csv"  # csv, xlsx, json
-output_dir: "outputs"
-headless: true  # for selenium

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 import yaml
 
 from .utils.detector import detect_cms
@@ -61,7 +62,8 @@ def run(config_path: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Scraper Ultime")
-    parser.add_argument("--config", default="scraper_ultime/config.yaml")
+    default_cfg = Path(__file__).with_name("config.yaml")
+    parser.add_argument("--config", default=str(default_cfg))
     args = parser.parse_args()
     run(args.config)
 
