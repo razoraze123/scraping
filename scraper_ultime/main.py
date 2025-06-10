@@ -10,6 +10,14 @@ from .utils.output import save_data
 from .utils.static_scraper import StaticScraper
 from .utils.logger import setup_logger
 
+__all__ = [
+    "load_config",
+    "save_config",
+    "run_scraper",
+    "run",
+    "main",
+]
+
 
 LOGGER = setup_logger(__name__)
 
@@ -19,8 +27,12 @@ def load_config(path: str) -> dict:
         return yaml.safe_load(f)
 
 
-def run(config_path: str) -> None:
-    cfg = load_config(config_path)
+def save_config(cfg: dict, path: str) -> None:
+    with open(path, "w", encoding="utf-8") as f:
+        yaml.safe_dump(cfg, f)
+
+
+def run_scraper(cfg: dict) -> None:
     url = cfg.get("url")
     mode = cfg.get("mode", "static")
     output_format = cfg.get("output_format", "csv")
@@ -58,6 +70,11 @@ def run(config_path: str) -> None:
 
     if dyn:
         dyn.close()
+
+
+def run(config_path: str) -> None:
+    cfg = load_config(config_path)
+    run_scraper(cfg)
 
 
 def main() -> None:
