@@ -1,6 +1,7 @@
 import os
 import re
 import requests
+from requests import exceptions as req_exc
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from tqdm import tqdm
@@ -28,12 +29,16 @@ class StaticScraper:
 
     def get_soup(self, url: str) -> BeautifulSoup:
         """Return a BeautifulSoup object for the given URL."""
-        if self.fetcher:
-            html = self.fetcher(url)
-        else:
-            resp = self.session.get(url, timeout=10)
-            resp.raise_for_status()
-            html = resp.text
+        try:
+            if self.fetcher:
+                html = self.fetcher(url)
+            else:
+                resp = self.session.get(url, timeout=10)
+                resp.raise_for_status()
+                html = resp.text
+        except req_exc.RequestException as exc:
+            raise RuntimeError(f"Error fetching {url}: {exc}") from exc
+
         return BeautifulSoup(html, "html.parser")
 
     def scrape_collection(self) -> list:
