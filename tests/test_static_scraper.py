@@ -3,9 +3,14 @@ import sys
 import pytest
 import requests_mock
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(
+    0,
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..")
+    ),
+)
 
-from ecom_scraper.utils.static_scraper import StaticScraper
+from ecom_scraper.utils.static_scraper import StaticScraper  # noqa: E402
 
 
 def test_get_soup_http_error():
