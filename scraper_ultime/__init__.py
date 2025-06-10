@@ -1,0 +1,1 @@
+"""Scraper Ultime package."""

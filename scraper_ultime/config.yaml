@@ -1,0 +1,13 @@
+url: "https://site.com/products"
+mode: "static"
+headless: true
+output_format: "json"
+output_dir: "outputs"
+max_pages: 10
+selectors:
+  product_links: "a[href*='/product']"
+  next_page: "a[rel='next'], a.next"
+  title: "h1"
+  description: "div.description"
+  image: "img[src^='http']"
+  variant: "select option"
