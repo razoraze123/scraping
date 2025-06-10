@@ -22,6 +22,8 @@ Statique : requests + BeautifulSoup (sites simples)
 
 Dynamique : Selenium (JS/carrousels/pagination dynamique)
 
+> **Note** : le mode dynamique nécessite Chrome/Chromedriver installés.
+
 Format de sortie au choix : CSV, Excel (.xlsx), JSON.
 
 📦 Structure des dossiers & fichiers
@@ -64,6 +66,16 @@ pip install -r requirements.txt
 1. Configurer config.yaml
 Renseigner l’URL de la page de collection à scraper
 
+Exemple minimal :
+
+```yaml
+url: "https://exemple.com/collection"
+mode: "static"  # ou "dynamic"
+output_format: "csv"
+output_dir: "outputs"
+headless: true
+```
+
 Choisir le mode : statique ou dynamique
 
 Sélectionner le format de sortie : csv, xlsx, json
@@ -73,7 +85,7 @@ Définir les chemins de sortie
 2. Lancer le script
 bash
 Copier
-python scraper.py --config config.yaml
+python -m ecom_scraper.scraper --config config.yaml
 3. Résultats
 Un fichier de sortie au format choisi (outputs/produits.csv|xlsx|json)
 
