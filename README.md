@@ -62,6 +62,10 @@ Installer les dépendances
 bash
 Copier
 pip install -r requirements.txt
+Installer Chrome et Chromedriver (pour le mode dynamique)
+
+Vous pouvez installer Chrome depuis <https://www.google.com/chrome/> et telecharger Chromedriver depuis <https://chromedriver.chromium.org/downloads>. Assurez-vous que la version de Chromedriver corresponde a celle de Chrome et que l'exécutable soit dans votre PATH.
+
 🛠️ Utilisation
 1. Configurer config.yaml
 Renseigner l’URL de la page de collection à scraper
@@ -98,7 +102,7 @@ nom_du_produit	lien_produit	type_produit	variantes	images (liste URL)	descriptio
 ...	...	...	...	...	...
 
 ✨ Exemples d’utilisation
-Voir le dossier examples/ pour des fichiers de configuration types et des résultats d’exemple (à ajouter après les premiers runs).
+Des fichiers de configuration types et des résultats d'exemple seront ajoutés ultérieurement.
 
 🧩 TODO & Roadmap
  Interface graphique (PySide6)
