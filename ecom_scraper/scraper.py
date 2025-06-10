@@ -37,7 +37,11 @@ def main():
     scraper = StaticScraper(url, output_dir, fetcher=fetcher)
 
     products_info = []
-    products = scraper.scrape_collection()
+    try:
+        products = scraper.scrape_collection()
+    except RuntimeError as exc:
+        print(f"Failed to scrape collection: {exc}")
+        return
     print(f"Found {len(products)} products")
     for p in products:
         info = scraper.scrape_product(p['link'])
