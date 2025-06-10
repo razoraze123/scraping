@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from PySide6.QtCore import Qt, QThread, Signal, QUrl
+from PySide6.QtCore import Qt, QThread, Signal, QUrl, QObject
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (
     QApplication,
@@ -29,16 +29,23 @@ from PySide6.QtWidgets import (
 from .main import load_config, save_config, run_scraper, LOGGER
 
 
-class QtLogHandler(logging.Handler):
+class LogHandler(QObject, logging.Handler):
+    """Send log records to the GUI via a Qt signal."""
+
     log_signal = Signal(str)
 
     def __init__(self) -> None:
-        super().__init__()
+        QObject.__init__(self)
+        logging.Handler.__init__(self)
         self.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
 
     def emit(self, record: logging.LogRecord) -> None:
         msg = self.format(record)
         self.log_signal.emit(msg)
+
+    def emit_log(self, text: str) -> None:
+        """Convenience wrapper to emit plain text messages."""
+        self.log_signal.emit(text)
 
 
 class ScraperWorker(QThread):
@@ -65,7 +72,7 @@ class ScraperGUI(QWidget):
         self.config_path: Optional[Path] = Path(__file__).with_name("config.yaml")
         self.config = load_config(self.config_path.as_posix())
 
-        self.log_handler = QtLogHandler()
+        self.log_handler = LogHandler()
         self.log_handler.log_signal.connect(self.append_log)
         LOGGER.addHandler(self.log_handler)
 
