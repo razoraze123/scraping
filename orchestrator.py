@@ -58,9 +58,13 @@ def orchestrate(config_path: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run the ecom_scraper pipeline")
+    parser = argparse.ArgumentParser(
+        description="Run the ecom_scraper pipeline"
+    )
     parser.add_argument(
-        "--config", default="config.yaml", help="Path to the configuration file"
+        "--config",
+        default="config.yaml",
+        help="Path to the configuration file",
     )
     args = parser.parse_args()
     orchestrate(args.config)

@@ -37,7 +37,7 @@ class StaticScraper:
         return BeautifulSoup(html, "html.parser")
 
     def scrape_collection(self) -> list:
-        """Scrape product links from a collection page with basic pagination."""
+        """Scrape product links with basic pagination."""
         products = []
         url = self.base_url
         visited = set()
@@ -50,7 +50,10 @@ class StaticScraper:
                     name = a.get_text(strip=True) or os.path.basename(href)
                     link = urljoin(url, href)
                     products.append({"name": name, "link": link})
-            next_link = soup.find("a", attrs={"rel": "next"}) or soup.find("a", class_=re.compile("next"))
+            next_link = (
+                soup.find("a", attrs={"rel": "next"})
+                or soup.find("a", class_=re.compile("next"))
+            )
             if next_link:
                 url = urljoin(url, next_link.get("href"))
             else:
@@ -78,7 +81,9 @@ class StaticScraper:
         # Description
         desc_div = soup.find("div", class_=re.compile("description", re.I))
         description = desc_div.get_text("\n", strip=True) if desc_div else ""
-        desc_path = os.path.join(self.output_dir, "descriptions", f"{self.sanitize(name)}.txt")
+        desc_path = os.path.join(
+            self.output_dir, "descriptions", f"{self.sanitize(name)}.txt"
+        )
         os.makedirs(os.path.dirname(desc_path), exist_ok=True)
         with open(desc_path, "w", encoding="utf-8") as f:
             f.write(description)
@@ -97,7 +102,11 @@ class StaticScraper:
         # Variants
         variants = []
         for select in soup.find_all("select"):
-            opts = [opt.get_text(strip=True) for opt in select.find_all("option") if opt.get("value")]
+            opts = [
+                opt.get_text(strip=True)
+                for opt in select.find_all("option")
+                if opt.get("value")
+            ]
             if opts:
                 variants.append(opts)
         product_type = "variable" if variants else "simple"
