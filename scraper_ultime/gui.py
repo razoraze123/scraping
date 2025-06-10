@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+from pathlib import Path
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -50,22 +51,23 @@ class ScraperGUI(QWidget):
             QMessageBox.warning(self, "Erreur", "Veuillez entrer une URL.")
             return
 
+        cfg_path = Path(__file__).resolve().parent / "config.yaml"
         cmd = [
             sys.executable,
             "-m",
             "scraper_ultime.main",
             "--config",
-            "scraper_ultime/config.yaml",
+            str(cfg_path),
         ]
         # Update config.yaml dynamically
         import yaml
 
-        with open("scraper_ultime/config.yaml", "r", encoding="utf-8") as f:
+        with open(cfg_path, "r", encoding="utf-8") as f:
             cfg = yaml.safe_load(f)
         cfg["url"] = url
         cfg["mode"] = "dynamic" if is_dynamic else "static"
         cfg["output_format"] = output_format
-        with open("scraper_ultime/config.yaml", "w", encoding="utf-8") as f:
+        with open(cfg_path, "w", encoding="utf-8") as f:
             yaml.safe_dump(cfg, f)
 
         QMessageBox.information(self, "Info", f"Scraping de {url} en cours...")
